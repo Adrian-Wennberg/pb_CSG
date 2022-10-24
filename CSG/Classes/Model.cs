@@ -69,31 +69,59 @@ namespace Parabox.CSG
             }
         }
 
+        /// <summary>
+        /// Initialize a Model from a UnityEngine.Mesh without transform
+        /// </summary>
+        public Model(Mesh mesh, params Material[] materials)
+        {
+            if(mesh == null)
+                throw new ArgumentNullException("mesh");
+            
+            m_Vertices = mesh.GetVertices().ToList();
+            m_Materials = new List<Material>(materials);
+            m_Indices = new List<List<int>>();
+
+            for (int i = 0, c = mesh.subMeshCount; i < c; i++)
+            {
+                if (mesh.GetTopology(i) != MeshTopology.Triangles)
+                    continue;
+                List<int> indices = new List<int>();
+                mesh.GetIndices(indices, i);
+                m_Indices.Add(indices);
+            }
+        }
+
         internal Model(List<Polygon> polygons)
         {
             m_Vertices = new List<Vertex>();
             Dictionary<Material, List<int>> submeshes = new Dictionary<Material, List<int>>();
+            Dictionary<Vertex, int> vertices = new Dictionary<Vertex, int>();
 
-            int p = 0;
+            int currentPos = 0;
+
+            void AddVertexAndIndex(Vertex vertex, List<int> submeshIndices)
+            {
+                if (!vertices.TryGetValue(vertex, out int pos))
+                {
+                    vertices.Add(vertex, pos = currentPos);
+                    m_Vertices.Add(vertex);
+                    currentPos++;
+                }
+                submeshIndices.Add(pos);
+            }
 
             for (int i = 0; i < polygons.Count; i++)
             {
                 Polygon poly = polygons[i];
-                List<int> indices;
 
-                if (!submeshes.TryGetValue(poly.material, out indices))
+                if (!submeshes.TryGetValue(poly.material, out List<int> indices))
                     submeshes.Add(poly.material, indices = new List<int>());
 
                 for (int j = 2; j < poly.vertices.Count; j++)
                 {
-                    m_Vertices.Add(poly.vertices[0]);
-                    indices.Add(p++);
-
-                    m_Vertices.Add(poly.vertices[j - 1]);
-                    indices.Add(p++);
-
-                    m_Vertices.Add(poly.vertices[j]);
-                    indices.Add(p++);
+                    AddVertexAndIndex(poly.vertices[0], indices);
+                    AddVertexAndIndex(poly.vertices[j - 1], indices);
+                    AddVertexAndIndex(poly.vertices[j], indices);
                 }
             }
 

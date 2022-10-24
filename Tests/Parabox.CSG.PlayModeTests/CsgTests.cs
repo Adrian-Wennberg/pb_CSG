@@ -4,7 +4,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Parabox.CSG.Tests
+namespace Parabox.CSG.PlayModeTests
 {
     public class CsgTests
     {

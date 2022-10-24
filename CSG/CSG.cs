@@ -87,11 +87,20 @@ namespace Parabox.CSG
         /// <param name="lhs">The base mesh of the boolean operation.</param>
         /// <param name="rhs">The input mesh of the boolean operation.</param>
         /// <returns>A new mesh if the operation succeeds, or null if an error occurs.</returns>
-        public static Model Subtract(GameObject lhs, GameObject rhs)
+        public static Model Subtract(GameObject lhs, GameObject rhs) 
         {
-            Model csg_model_a = new Model(lhs);
-            Model csg_model_b = new Model(rhs);
+            return Subtract(new Model(lhs), new Model(rhs));
+        }
         
+        
+        /// <summary>
+        /// Returns a new mesh by subtracting @lhs with @rhs.
+        /// </summary>
+        /// <param name="lhs">The base mesh of the boolean operation.</param>
+        /// <param name="rhs">The input mesh of the boolean operation.</param>
+        /// <returns>A new mesh if the operation succeeds, or null if an error occurs.</returns>
+        public static Model Subtract(Model csg_model_a, Model csg_model_b)
+        {
             Node a = new Node(csg_model_a.ToPolygons());
             Node b = new Node(csg_model_b.ToPolygons());
         
@@ -99,6 +108,7 @@ namespace Parabox.CSG
         
             return new Model(polygons);
         }
+
 
         /// <summary>
         /// Returns a new mesh by intersecting @lhs with @rhs.

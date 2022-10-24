@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -136,6 +137,21 @@ namespace Parabox.CSG
                 }
                 break;
             }   // End switch(polygonType)
+        }
+        
+        private bool Equals(Plane other)
+        {
+            return normal.Equals(other.normal) && w.Equals(other.w);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return ReferenceEquals(this, obj) || obj is Plane other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(normal, w);
         }
     }
 }
