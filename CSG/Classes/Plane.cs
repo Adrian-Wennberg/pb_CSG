@@ -10,8 +10,8 @@ namespace Parabox.CSG
     /// </summary>
     sealed class Plane
     {
-        public Vector3 normal;
-        public float w;
+        public readonly Vector3 normal;
+        public readonly float w;
 
         [System.Flags]
         enum EPolygonType
@@ -34,6 +34,12 @@ namespace Parabox.CSG
             w = Vector3.Dot(normal, a);
         }
 
+        private Plane(Vector3 normal, float w)
+        {
+            this.normal = normal;
+            this.w = w;
+        }
+
         public override string ToString() => $"{normal} {w}";
 
         public bool Valid()
@@ -41,10 +47,9 @@ namespace Parabox.CSG
             return normal.magnitude > 0f;
         }
 
-        public void Flip()
+        public Plane Flipped()
         {
-            normal *= -1f;
-            w *= -1f;
+            return new Plane(normal * -1f, w * -1f);
         }
 
         // Split `polygon` by this plane if needed, then put the polygon or polygon
@@ -149,9 +154,10 @@ namespace Parabox.CSG
             return ReferenceEquals(this, obj) || obj is Plane other && Equals(other);
         }
 
+       
         public override int GetHashCode()
         {
-            return HashCode.Combine(normal, w);
+            unchecked { return (normal.GetHashCode() * 397) ^ w.GetHashCode(); }
         }
     }
 }

@@ -28,7 +28,7 @@ namespace Parabox.CSG
             for (int i = 0; i < vertices.Count; i++)
                 vertices[i].Flip();
 
-            plane.Flip();
+            plane = plane.Flipped();
         }
 
         public override string ToString()
@@ -115,8 +115,8 @@ namespace Parabox.CSG
         {
             List<Vertex> mergedWithoutColinear = new List<Vertex>();
 
-            Vector3 lastDirection = mergedVertices[0].position - mergedVertices[^1].position;
-            Vector3 lastNormal = mergedVertices[^1].normal;
+            Vector3 lastDirection = mergedVertices[0].position - mergedVertices[mergedVertices.Count-1].position;
+            Vector3 lastNormal = mergedVertices[mergedVertices.Count-1].normal;
 
             for (int i = 0; i < mergedVertices.Count; i++)
             {

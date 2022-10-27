@@ -63,7 +63,7 @@ namespace Parabox.CSG
             for (int i = 0; i < this.polygons.Count; i++)
                 this.polygons[i].Flip();
 
-            this.plane.Flip();
+            this.plane = this.plane.Flipped();
 
             if (this.front != null)
             {
@@ -93,9 +93,7 @@ namespace Parabox.CSG
 
             if (newNode)
             {
-                plane = new Plane();
-                plane.normal = list[0].plane.normal;
-                plane.w = list[0].plane.w;
+                plane = list[0].plane;
             }
 
             if (polygons == null)
