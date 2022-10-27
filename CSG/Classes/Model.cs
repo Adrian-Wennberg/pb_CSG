@@ -12,6 +12,7 @@ namespace Parabox.CSG
     {
         List<Vertex> m_Vertices;
         List<Material> m_Materials;
+        List<Polygon> m_Polygons;
         List<List<int>> m_Indices;
 
         public List<Material> materials
@@ -93,6 +94,8 @@ namespace Parabox.CSG
 
         internal Model(List<Polygon> polygons)
         {
+            polygons = polygons.Combine();
+            m_Polygons = polygons;
             m_Vertices = new List<Vertex>();
             Dictionary<Material, List<int>> submeshes = new Dictionary<Material, List<int>>();
             Dictionary<Vertex, int> vertices = new Dictionary<Vertex, int>();
@@ -131,6 +134,8 @@ namespace Parabox.CSG
 
         internal List<Polygon> ToPolygons()
         {
+            if(m_Polygons != null)
+                return m_Polygons;
             List<Polygon> list = new List<Polygon>();
 
             for (int s = 0, c = m_Indices.Count; s < c; s++)

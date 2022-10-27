@@ -22,6 +22,49 @@ namespace Parabox.CSG.PlayModeTests
             // Assert
             Assert.IsFalse(result.vertices.Any());
         }
+        
+        [UnityTest]
+        public IEnumerator CsgSubtract_SubrtactingCubeFromBiggerCube_ReturnMinimalRepresentation()
+        {
+            // Arrange
+            GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            GameObject cube2 = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            cube1.transform.position = Vector3.one * 0.5f;
+            cube2.transform.position = Vector3.one;
+            cube2.transform.localScale *= 2;
+            yield return null;
+            int newPolygonCount = 12;
+            int newVertexCount = 2 * 4 * 3 + 3 * 7;
+
+            // Act
+            Model result = CSG.Subtract(cube2, cube1);
+
+            // Assert
+            Assert.AreEqual(newPolygonCount, result.ToPolygons().Count, $"Polygon count is not as expected");
+            
+            Assert.AreEqual(newVertexCount, result.vertices.Count, $"Vertex count is not as expected");
+        }
+        
+        [UnityTest]
+        public IEnumerator CsgSubtract_SubrtactingHalfCubeFromCube_ReturnMinimalRepresentation()
+        {
+            // Arrange
+            GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            GameObject cube2 = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            cube1.transform.position = new Vector3(1, 0.75f, 1);
+            cube1.transform.localScale = new Vector3(1, 0.5f, 1);
+            cube2.transform.position = Vector3.one;
+            yield return null;
+            int newPolygonCount = 6;
+            int newVertexCount = 4 * 6;
+
+            // Act
+            Model result = CSG.Subtract(cube2, cube1);
+
+            // Assert
+            Assert.AreEqual(newPolygonCount, result.ToPolygons().Count, $"Polygon count is not as expected");
+            Assert.AreEqual(newVertexCount, result.vertices.Count, $"Vertex count is not as expected");
+        }
 
         [UnityTest]
         public IEnumerator CsgUnion_UnionCubeWithItself_SameCubeModel()

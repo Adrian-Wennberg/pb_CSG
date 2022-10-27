@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using UnityEngine;
 
 namespace Parabox.CSG
@@ -7,7 +8,8 @@ namespace Parabox.CSG
     /// Holds information about a single vertex, and provides methods for averaging between many.
     /// <remarks>All values are optional. Where not present a default value will be substituted if necessary.</remarks>
     /// </summary>
-    public struct Vertex
+    [DebuggerDisplay("Position: {m_Position}, Normal: {m_Normal}")]
+    public struct Vertex 
     {
         Vector3 m_Position;
         Color m_Color;
